@@ -59,21 +59,20 @@ for Subread in *.daa
 do nice diamond view -a $Subread -o ${Subread}.m8 --threads 8
 done
 
-# FILTERING AND SUMMARISING DIAMOND OUTPUT 
-	#	≥60% sequence identity
-	#	≥40 amino acid length
+##FILTERING AND SUMMARISING DIAMOND OUTPUT
+#       >= 65% sequence identity
+#       >= 40 amino acid length
 
 for daafile in *.daa
-
-do diamond view -a $daafile | awk '{if ($3 >= 60 && $4 >=40) print $0}' | cut -f 2 | sort | uniq -c | sort -r -k 1 > ${daafile}_summary.txt --threads 8
-
+do diamond view -a $daafile | awk '{if ($3 >= 65 && $4 >= 40) print $0}' | cut -f 2,3 | sort | uniq -c | sort -r -k 1 > $Output_DIR/Final/${daafile}_summary.txt
 done
 
-	# total reads summary
-cat *.m8 | awk '{if ($3 >= 60 && $4 >=40) print $0}' | cut -f 2 | sort | uniq -c | sort -n -k 1 > total_reads_summary.txt
+cd $Output_DIR/Final
 
-	# the further low vs high emission summary will need to type the file names manually and change *.m8
-
+#Total reads summary
+# cat *.m8 | awk '{if ($3 >= 65 && $4 >= 40) print $0}' | cut -f 2,3 | sort | uniq -c | sort -n -k 1 > $Output_DIR/Final/total_reads_summary.txt
+awk '{print $0,"\t", FILENAME}' Rank*.txt >Total_reads_sum.txt
+#the further low vs high emission summary will need to type the file names manually and change *.m8
 
 
 
